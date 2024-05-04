@@ -24,7 +24,7 @@ router.post("/", async (request, response) => {
         const customer = new Customer({
             name: request.body.name,
             isGold: request.body.isGold,
-            phone: request.body.phone
+            email: request.body.email
         });
         await customer.save();
         response.send(customer);
@@ -46,7 +46,7 @@ router.put("/:id", async (request, response) => {
             return;
         }
         customer.name = request.body.name;
-        customer.phone = request.body.phone;
+        customer.email = request.body.email;
         customer.isGold = request.body.isGold;
         customer = await customer.save();
         response.send(customer);
@@ -70,7 +70,7 @@ router.get("/:id", async (request, response) => {
         response.status(404).send("The genre with the given ID was not found.");
         return;
     }
-    request.send(customer);
+    response.send(customer);
 });
 
 module.exports = router;

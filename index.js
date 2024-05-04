@@ -1,14 +1,12 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const Fawn = require("fawn");
 const Joi = require("joi");
 Joi.objectId = require('joi-objectid')(Joi);
-const genres = require("./routes/genre");
-const customers = require("./routes/customer");
-const movies = require("./routes/movie");
-const rentals = require("./routes/rental");
-
-Fawn.init(mongoose);
+const genres = require("./routes/genres");
+const customers = require("./routes/customers");
+const movies = require("./routes/movies");
+const rentals = require("./routes/rentals");
+const users = require("./routes/users");
 
 mongoose.connect("mongodb://localhost/vidly")
     .then(() => {
@@ -25,6 +23,7 @@ app.use("/api/genres", genres);
 app.use("/api/customers", customers);
 app.use("/api/movies", movies);
 app.use("/api/rentals", rentals);
+app.use("/api/users", users);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

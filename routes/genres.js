@@ -64,7 +64,7 @@ router.get("/:id", async (request, response) => {
         response.status(404).send("The genre with the given ID was not found.");
         return;
     }
-    request.send(genre);
+    response.send(genre);
 });
 
 module.exports = router;

@@ -1,5 +1,4 @@
 const express = require("express");
-const Fawn = require("fawn");
 const {Rental, validate} = require("../models/rental");
 const {Movie} = require("../models/movie");
 const {Customer} = require("../models/customer");
@@ -33,22 +32,25 @@ router.post("/", async (request, response) => {
         response.status(400).send("Movie is out of stock");
         return;
     }
-    let rental = new Rental({
+    const rental = new Rental({
         customer: request.body.customerId,
         movie: request.body.movieId,
     });
+    // TODO add logic to fail if both dont save
     try {
-        new Fawn.Task()
-            .save("rentals", rental)
-            .update("movies", { _id: movie._id }, {
-                $inc: { stock: -1 }
-            })
-            .run();
-        response.send(rental);
+        await rental.save();
     }
     catch (error) {
-        response.status(500).send("Saving new data failed");
+        response.status(500).send("Saving rental failed");
     }
+    try {
+        movie.stock--;
+        await movie.save();
+    }
+    catch (error) {
+        response.status(500).send("Saving movie failed");
+    }
+    response.send(rental);
 });
 
 router.get("/:id", async (request, response) => {
