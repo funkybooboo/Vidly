@@ -3,21 +3,18 @@ const {Movie, validate} = require("../models/movie");
 const {Genre} = require("../models/genre");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
+const asyncCatch = require("../middleware/asyncCatch");
 
 const router = express.Router();
 
-router.get("/", async (request, response) => {
-    try {
-        const movies = await Movie
-            .find()
-            .sort({title: 1});
-        response.send(movies);
-    } catch (error) {
-        console.log(error.message);
-    }
-});
+router.get("/", asyncCatch(async (request, response) => {
+    const movies = await Movie
+        .find()
+        .sort({title: 1});
+    response.send(movies);
+}));
 
-router.post("/", [auth, admin], async (request, response) => {
+router.post("/", [auth, admin], asyncCatch(async (request, response) => {
     const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
@@ -28,21 +25,17 @@ router.post("/", [auth, admin], async (request, response) => {
         request.status(400).send("Invalid Movie")
         return;
     }
-    try {
-        const movie = new Movie({
-            title: request.body.title,
-            genre: request.body.genreId,
-            stock: request.body.stock,
-            dailyRentalRate: request.body.dailyRentalRate
-        });
-        await movie.save();
-        response.send(movie);
-    } catch (error) {
-        console.log(error.message);
-    }
-});
+    const movie = new Movie({
+        title: request.body.title,
+        genre: request.body.genreId,
+        stock: request.body.stock,
+        dailyRentalRate: request.body.dailyRentalRate
+    });
+    await movie.save();
+    response.send(movie);
+}));
 
-router.put("/:id", [auth, admin], async (request, response) => {
+router.put("/:id", [auth, admin], asyncCatch(async (request, response) => {
     const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
@@ -58,34 +51,30 @@ router.put("/:id", [auth, admin], async (request, response) => {
         request.status(400).send("Invalid Movie")
         return;
     }
-    try {
-        movie.title = request.body.title;
-        movie.genre = request.body.genreId;
-        movie.stock = request.body.stock;
-        movie.dailyRentalRate = request.body.dailyRentalRate;
-        await movie.save();
-        response.send(movie);
-    } catch (error) {
-        console.log(error.message);
-    }
-});
+    movie.title = request.body.title;
+    movie.genre = request.body.genreId;
+    movie.stock = request.body.stock;
+    movie.dailyRentalRate = request.body.dailyRentalRate;
+    await movie.save();
+    response.send(movie);
+}));
 
-router.delete("/:id", [auth, admin], async (request, response) => {
+router.delete("/:id", [auth, admin], asyncCatch(async (request, response) => {
     const movie = await Movie.deleteOne({_id: request.params.id});
     if (!movie) {
         response.status(404).send("The movie with the given ID was not found.");
         return;
     }
     response.send(movie);
-});
+}));
 
-router.get("/:id", async (request, response) => {
+router.get("/:id", asyncCatch(async (request, response) => {
     const movie = await Movie.findById(request.params.id);
     if (!movie) {
         response.status(404).send("The movie with the given ID was not found.");
         return;
     }
     response.send(movie);
-});
+}));
 
 module.exports = router;

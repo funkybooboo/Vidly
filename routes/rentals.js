@@ -4,6 +4,7 @@ const {Movie} = require("../models/movie");
 const {Customer} = require("../models/customer");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
+const asyncCatch = require("../middleware/asyncCatch");
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.get("/", async (request, response) => {
     response.send(rentals);
 });
 
-router.post("/", [auth, admin], async (request, response) => {
+router.post("/", [auth, admin], asyncCatch(async (request, response) => {
     const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
@@ -39,30 +40,20 @@ router.post("/", [auth, admin], async (request, response) => {
         movie: request.body.movieId,
     });
     // TODO add logic to fail if both dont save
-    try {
-        await rental.save();
-    }
-    catch (error) {
-        response.status(500).send("Saving rental failed");
-    }
-    try {
-        movie.stock--;
-        await movie.save();
-    }
-    catch (error) {
-        response.status(500).send("Saving movie failed");
-    }
+    await rental.save();
+    movie.stock--;
+    await movie.save();
     response.send(rental);
-});
+}));
 
-router.get("/:id", async (request, response) => {
+router.get("/:id", asyncCatch(async (request, response) => {
     const rental = await Rental.findById(request.params.id);
     if (!rental) {
         response.status(404).send("The rental with the given ID was not found.");
         return;
     }
     response.send(rental);
-});
+}));
 
 
 module.exports = router;

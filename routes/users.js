@@ -2,15 +2,16 @@ const express = require("express");
 const {User, validate} = require("../models/user");
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
+const asyncCatch = require("../middleware/asyncCatch");
 
 const router = express.Router();
 
-router.get("/me", auth, async (request, response) => {
+router.get("/me", auth, asyncCatch(async (request, response) => {
     const user = await User.findById(request.user._id).select("-password");
     response.send(user);
-});
+}));
 
-router.post("/", auth, async (request, response) => {
+router.post("/", auth, asyncCatch(async (request, response) => {
     const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
@@ -39,6 +40,6 @@ router.post("/", auth, async (request, response) => {
     } catch (error) {
         console.log(error.message);
     }
-});
+}));
 
 module.exports = router;
