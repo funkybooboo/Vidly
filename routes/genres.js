@@ -1,5 +1,6 @@
 const express = require("express");
 const {Genre, validate} = require("../models/genre");
+const auth = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -14,7 +15,7 @@ router.get("/", async (request, response) => {
     }
 });
 
-router.post("/", async (request, response) => {
+router.post("/", auth, async (request, response) => {
     const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
@@ -29,7 +30,7 @@ router.post("/", async (request, response) => {
     }
 });
 
-router.put("/:id", async (request, response) => {
+router.put("/:id", auth, async (request, response) => {
     const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
@@ -49,7 +50,7 @@ router.put("/:id", async (request, response) => {
     }
 });
 
-router.delete("/:id", async (request, response) => {
+router.delete("/:id", auth, async (request, response) => {
     const genre = await Genre.deleteOne({_id: request.params.id});
     if (!genre) {
         response.status(404).send("The genre with the given ID was not found.");
