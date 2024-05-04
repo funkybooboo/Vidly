@@ -1,6 +1,7 @@
 const express = require("express");
 const {Customer, validate} = require("../models/customer");
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ router.get("/", async (request, response) => {
     }
 });
 
-router.post("/", auth, async (request, response) => {
+router.post("/", [auth, admin], async (request, response) => {
     const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
@@ -34,7 +35,7 @@ router.post("/", auth, async (request, response) => {
     }
 });
 
-router.put("/:id", auth, async (request, response) => {
+router.put("/:id", [auth, admin], async (request, response) => {
     try {
         let customer = await Customer.findById(request.params.id);
         if (!customer) {
@@ -56,7 +57,7 @@ router.put("/:id", auth, async (request, response) => {
     }
 });
 
-router.delete("/:id", auth, async (request, response) => {
+router.delete("/:id", [auth, admin], async (request, response) => {
     const customer = await Customer.deleteOne({_id: request.params.id});
     if (!customer) {
         response.status(404).send("The genre with the given ID was not found.");

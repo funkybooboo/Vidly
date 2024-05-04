@@ -3,6 +3,7 @@ const {Rental, validate} = require("../models/rental");
 const {Movie} = require("../models/movie");
 const {Customer} = require("../models/customer");
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get("/", async (request, response) => {
     response.send(rentals);
 });
 
-router.post("/", auth, async (request, response) => {
+router.post("/", [auth, admin], async (request, response) => {
     const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
