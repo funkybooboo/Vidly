@@ -30,4 +30,4 @@ function validate(genre) {
 }
 
 module.exports.Customer = Customer;
-module.validate = validate;
+module.exports.validate = validate;

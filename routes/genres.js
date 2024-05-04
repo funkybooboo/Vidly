@@ -14,14 +14,14 @@ router.get("/", async (request, response) => {
     }
 });
 
-router.post("/", async (reqest, response) => {
-    const {error} = validate(reqest.body);
+router.post("/", async (request, response) => {
+    const {error} = validate(request.body);
     if (error) {
         response.status(400).send(error);
         return;
     }
     try {
-        let genre = new Genre({name: reqest.body.name});
+        let genre = new Genre({name: request.body.name});
         genre = await genre.save();
         response.send(genre);
     } catch (error) {
