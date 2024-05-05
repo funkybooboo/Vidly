@@ -1,9 +1,10 @@
 const express = require("express");
-const { Movie, validate } = require("../models/movie");
+const { Movie, validator } = require("../models/movie");
 const { Genre } = require("../models/genre");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const asyncCatch = require("../middleware/asyncCatch");
+const validate = require("../middleware/validateRequest");
 
 const router = express.Router();
 
@@ -16,13 +17,7 @@ router.get("/", asyncCatch(async (request, response) => {
 }));
 
 // POST route to create a new movie
-router.post("/", [auth, admin], asyncCatch(async (request, response) => {
-    // Validate the request body
-    const { error } = validate(request.body);
-    if (error) {
-        response.status(400).send(error);
-        return;
-    }
+router.post("/", [auth, admin, validate(validator)], asyncCatch(async (request, response) => {
     // Find the genre by ID
     const genre = await Genre.findById(request.body.genreId);
     if (!genre) {
@@ -41,13 +36,7 @@ router.post("/", [auth, admin], asyncCatch(async (request, response) => {
 }));
 
 // PUT route to update an existing movie
-router.put("/:id", [auth, admin], asyncCatch(async (request, response) => {
-    // Validate the request body
-    const { error } = validate(request.body);
-    if (error) {
-        response.status(400).send(error);
-        return;
-    }
+router.put("/:id", [auth, admin, validate(validator)], asyncCatch(async (request, response) => {
     // Find the movie by ID
     const movie = await Movie.findById(request.params.id);
     if (!movie) {

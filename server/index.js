@@ -8,6 +8,7 @@ const values = require("./startup/values");
 const routes = require("./startup/routes");
 const db = require("./startup/db");
 const start = require("./startup/start");
+const prod = require("./startup/prod");
 
 // Set up logging
 generalLogging();
@@ -24,6 +25,9 @@ dbLogging();
 
 // Create Express app
 const app = express();
+
+// Set up prod routes
+prod(app);
 
 // Set up routing
 routes(app);

@@ -7,6 +7,7 @@ const movies = require("../routes/movies");
 const rentals = require("../routes/rentals");
 const users = require("../routes/users");
 const auth = require("../routes/auth");
+const returns = require("../routes/returns")
 const errorMiddleware = require("../middleware/error");
 
 /**
@@ -24,6 +25,7 @@ function registerRoutes(app) {
     app.use("/api/rentals", rentals);     // Route for handling rentals
     app.use("/api/users", users);         // Route for handling users
     app.use("/api/auth", auth);           // Route for handling authentication
+    app.use("/api/returns", returns);     // Route for handling returns
 
     // Register error handling middleware
     app.use(errorMiddleware);

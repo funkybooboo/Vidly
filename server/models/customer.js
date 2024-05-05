@@ -26,7 +26,7 @@ const customerSchema = new mongoose.Schema({
 const Customer = mongoose.model("Customer", customerSchema);
 
 // Validate the customer data using Joi
-function validate(customer) {
+function validator(customer) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(50).required(),
         email: Joi.string().min(2).max(50).required().email(),
@@ -37,4 +37,4 @@ function validate(customer) {
 
 // Export the Customer model and the validate function
 module.exports.Customer = Customer;
-module.exports.validate = validate;
+module.exports.validator = validator;

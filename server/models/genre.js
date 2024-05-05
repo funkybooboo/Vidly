@@ -15,7 +15,7 @@ const genreSchema = new mongoose.Schema({
 const Genre = mongoose.model("Genre", genreSchema);
 
 // Validate the genre data using Joi
-function validate(genre) {
+function validator(genre) {
     const schema = Joi.object({
         name: Joi.string().min(2).max(50).required()
     });
@@ -25,4 +25,4 @@ function validate(genre) {
 // Export the schema, model, and validate function
 module.exports.genreSchema = genreSchema;
 module.exports.Genre = Genre;
-module.exports.validate = validate;
+module.exports.validator = validator;

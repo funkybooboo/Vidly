@@ -1,8 +1,9 @@
 const express = require("express");
-const { User, validate } = require("../models/user");
+const { User, validator } = require("../models/user");
 const bcrypt = require("bcrypt");
 const auth = require("../middleware/auth");
 const asyncCatch = require("../middleware/asyncCatch");
+const validate = require("../middleware/validateRequest");
 
 const router = express.Router();
 
@@ -14,13 +15,7 @@ router.get("/me", auth, asyncCatch(async (request, response) => {
 }));
 
 // Route to register a new user (requires authentication)
-router.post("/", auth, asyncCatch(async (request, response) => {
-    // Validate user input
-    const { error } = validate(request.body);
-    if (error) {
-        response.status(400).send(error);
-        return;
-    }
+router.post("/", [auth, validate(validator)], asyncCatch(async (request, response) => {
     try {
         // Check if the user is already registered
         let user = await User.findOne({ email: request.body.email });

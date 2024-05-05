@@ -33,7 +33,7 @@ const movieSchema = new mongoose.Schema({
 const Movie = mongoose.model("Movie", movieSchema);
 
 // Validate the movie data using Joi
-function validate(movie) {
+function validator(movie) {
     const schema = Joi.object({
         title: Joi.string().min(2).max(50).required(),
         genreId: Joi.objectId().required(), // Assuming objectId is a custom Joi validator for ObjectId
@@ -45,4 +45,4 @@ function validate(movie) {
 
 // Export the model and validate function
 module.exports.Movie = Movie;
-module.exports.validate = validate;
+module.exports.validator = validator;

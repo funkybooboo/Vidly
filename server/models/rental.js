@@ -15,13 +15,12 @@ const rentalSchema = new mongoose.Schema({
     },
     dateOut: {
         type: Date,
-        required: true,
         default: Date.now // Default value is the current date/time
     },
     dateIn: {
         type: Date,
     },
-    rentalFee: {
+    fee: {
         type: Number,
         min: 0 // Rental fee cannot be negative
     }
@@ -31,7 +30,7 @@ const rentalSchema = new mongoose.Schema({
 const Rental = mongoose.model("Rental", rentalSchema);
 
 // Validate the rental data using Joi
-function validate(rental) {
+function validator(rental) {
     const schema = Joi.object({
         customerId: Joi.objectId().required(), // Assuming objectId is a custom Joi validator for ObjectId
         movieId: Joi.objectId().required()
@@ -41,4 +40,4 @@ function validate(rental) {
 
 // Export the model and validate function
 module.exports.Rental = Rental;
-module.exports.validate = validate;
+module.exports.validater = validator;

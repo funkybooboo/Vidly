@@ -1,9 +1,10 @@
 const validateObjectId = require("../middleware/validateObjectId")
 const express = require("express");
-const { Genre, validate } = require("../models/genre");
+const { Genre, validator } = require("../models/genre");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const asyncCatch = require("../middleware/asyncCatch");
+const validate = require("../middleware/validateRequest");
 
 const router = express.Router();
 
@@ -16,13 +17,7 @@ router.get("/", asyncCatch(async (request, response) => {
 }));
 
 // POST route to create a new genre
-router.post("/", [auth, admin], asyncCatch(async (request, response) => {
-    // Validate the request body
-    const { error } = validate(request.body);
-    if (error) {
-        response.status(400).send(error);
-        return;
-    }
+router.post("/", [auth, admin, validate(validator)], asyncCatch(async (request, response) => {
     // Create a new genre instance
     const genre = new Genre({ name: request.body.name });
     await genre.save();
@@ -30,13 +25,7 @@ router.post("/", [auth, admin], asyncCatch(async (request, response) => {
 }));
 
 // PUT route to update an existing genre
-router.put("/:id", [validateObjectId, auth, admin], asyncCatch(async (request, response) => {
-    // Validate the request body
-    const { error } = validate(request.body);
-    if (error) {
-        response.status(400).send(error);
-        return;
-    }
+router.put("/:id", [validateObjectId, auth, admin, validate(validator)], asyncCatch(async (request, response) => {
     // Find the genre by ID
     let genre = await Genre.findById(request.params.id);
     if (!genre) {
@@ -51,7 +40,7 @@ router.put("/:id", [validateObjectId, auth, admin], asyncCatch(async (request, r
 
 // DELETE route to delete a genre
 router.delete("/:id", [validateObjectId, auth, admin], asyncCatch(async (request, response) => {
-    const genre = await Genre.deleteOne({ _id: request.params.id });
+    const genre = await Genre.findByIdAndDelete(request.params.id);
     if (!genre) {
         response.status(404).send("The genre with the given ID was not found.");
         return;

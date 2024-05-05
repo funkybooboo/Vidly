@@ -1,10 +1,12 @@
 const express = require("express");
-const { Rental, validate } = require("../models/rental");
+const { Rental, validator } = require("../models/rental");
 const { Movie } = require("../models/movie");
 const { Customer } = require("../models/customer");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const asyncCatch = require("../middleware/asyncCatch");
+const validate = require("../middleware/validateRequest");
+
 
 const router = express.Router();
 
@@ -18,13 +20,7 @@ router.get("/", async (request, response) => {
 });
 
 // POST route to create a new rental
-router.post("/", [auth, admin], asyncCatch(async (request, response) => {
-    // Validate the request body
-    const { error } = validate(request.body);
-    if (error) {
-        response.status(400).send(error);
-        return;
-    }
+router.post("/", [auth, admin, validate(validator)], asyncCatch(async (request, response) => {
     // Find the customer by ID
     const customer = await Customer.findById(request.body.customerId);
     if (!customer) {
