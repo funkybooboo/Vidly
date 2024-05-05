@@ -1,30 +1,35 @@
 const express = require("express");
-const {Movie, validate} = require("../models/movie");
-const {Genre} = require("../models/genre");
+const { Movie, validate } = require("../models/movie");
+const { Genre } = require("../models/genre");
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
 const asyncCatch = require("../middleware/asyncCatch");
 
 const router = express.Router();
 
+// GET route to fetch all movies
 router.get("/", asyncCatch(async (request, response) => {
     const movies = await Movie
         .find()
-        .sort({title: 1});
+        .sort({ title: 1 });
     response.send(movies);
 }));
 
+// POST route to create a new movie
 router.post("/", [auth, admin], asyncCatch(async (request, response) => {
-    const {error} = validate(request.body);
+    // Validate the request body
+    const { error } = validate(request.body);
     if (error) {
         response.status(400).send(error);
         return;
     }
+    // Find the genre by ID
     const genre = await Genre.findById(request.body.genreId);
     if (!genre) {
-        request.status(400).send("Invalid Movie")
+        response.status(400).send("Invalid Genre");
         return;
     }
+    // Create a new movie instance
     const movie = new Movie({
         title: request.body.title,
         genre: request.body.genreId,
@@ -35,22 +40,27 @@ router.post("/", [auth, admin], asyncCatch(async (request, response) => {
     response.send(movie);
 }));
 
+// PUT route to update an existing movie
 router.put("/:id", [auth, admin], asyncCatch(async (request, response) => {
-    const {error} = validate(request.body);
+    // Validate the request body
+    const { error } = validate(request.body);
     if (error) {
         response.status(400).send(error);
         return;
     }
+    // Find the movie by ID
     const movie = await Movie.findById(request.params.id);
     if (!movie) {
         response.status(404).send("The movie with the given ID was not found.");
         return;
     }
+    // Find the genre by ID
     const genre = await Genre.findById(request.body.genreId);
     if (!genre) {
-        request.status(400).send("Invalid Movie")
+        response.status(400).send("Invalid Genre");
         return;
     }
+    // Update the movie's details
     movie.title = request.body.title;
     movie.genre = request.body.genreId;
     movie.stock = request.body.stock;
@@ -59,8 +69,9 @@ router.put("/:id", [auth, admin], asyncCatch(async (request, response) => {
     response.send(movie);
 }));
 
+// DELETE route to delete a movie
 router.delete("/:id", [auth, admin], asyncCatch(async (request, response) => {
-    const movie = await Movie.deleteOne({_id: request.params.id});
+    const movie = await Movie.deleteOne({ _id: request.params.id });
     if (!movie) {
         response.status(404).send("The movie with the given ID was not found.");
         return;
@@ -68,6 +79,7 @@ router.delete("/:id", [auth, admin], asyncCatch(async (request, response) => {
     response.send(movie);
 }));
 
+// GET route to fetch a movie by ID
 router.get("/:id", asyncCatch(async (request, response) => {
     const movie = await Movie.findById(request.params.id);
     if (!movie) {
