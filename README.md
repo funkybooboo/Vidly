@@ -2,6 +2,10 @@
 
 The Vidly Video Store Management App is designed to assist employees working behind the counter of a video store in managing their inventory, customers, rentals, and more.
 
+## Dependencies
+
+You will need to install MongoDB
+
 ## Getting Started
 
 To run the app, follow these steps:
@@ -28,6 +32,7 @@ To run the app, follow these steps:
 
     ```bash
     export vidly_jwtPrivateKey=<your-secret-key>
+    export vidly_dbConnection=mongodb://localhost/vidly
     ```
 
 5. Start the server:

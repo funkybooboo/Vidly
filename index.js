@@ -3,9 +3,6 @@ const express = require("express");
 const winston = require("winston");
 const Joi = require("joi");
 
-// Set up validation
-Joi.objectId = require('joi-objectid')(Joi);
-
 // Import setup functions
 const { generalLogging, dbLogging } = require("./startup/logging");
 const values = require("./startup/values");
@@ -14,6 +11,9 @@ const db = require("./startup/db");
 
 // Set up logging
 generalLogging();
+
+// Set up validation
+Joi.objectId = require('joi-objectid')(Joi);
 
 // Check and retrieve required environment variables
 const dbConnection = values();
