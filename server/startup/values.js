@@ -4,13 +4,12 @@ const config = require("config");
 /**
  * Retrieves and validates configuration values required for the application.
  * Exits the process if required values are not set.
- * @returns {string} The database connection string
  */
-function getConfigurationValues() {
+function values() {
     // Check if dbConnection is set
-    const dbConnection = config.get("dbConnection");
-    if (!dbConnection) {
-        winston.error("Need to set up dbConnection");
+    const db = config.get("db");
+    if (!db) {
+        winston.error("Need to set up db connection string");
         process.exit(1);
     }
 
@@ -19,9 +18,6 @@ function getConfigurationValues() {
         winston.error("Need to set up jwtPrivateKey");
         process.exit(1);
     }
-
-    // Return the database connection string
-    return dbConnection;
 }
 
-module.exports = getConfigurationValues;
+module.exports = values;

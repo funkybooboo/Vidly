@@ -1,5 +1,6 @@
 const winston = require("winston");
 require("winston-mongodb");
+const config = require("config");
 
 /**
  * Sets up general logging to the console and a file, and handles uncaught exceptions and unhandled rejections.
@@ -26,11 +27,10 @@ function generalLogging() {
 
 /**
  * Sets up logging to MongoDB.
- * @param {string} dbConnection MongoDB connection string
  */
-function dbLogging(dbConnection) {
+function dbLogging() {
     // Add MongoDB transport for logging to MongoDB
-    winston.add(new winston.transports.MongoDB({ db: dbConnection }));
+    winston.add(new winston.transports.MongoDB({ db: config.get("db") }));
 }
 
 module.exports.generalLogging = generalLogging;

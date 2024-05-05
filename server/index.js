@@ -1,6 +1,5 @@
 // Import required modules
 const express = require("express");
-const winston = require("winston");
 const Joi = require("joi");
 
 // Import setup functions
@@ -8,6 +7,7 @@ const { generalLogging, dbLogging } = require("./startup/logging");
 const values = require("./startup/values");
 const routes = require("./startup/routes");
 const db = require("./startup/db");
+const start = require("./startup/start");
 
 // Set up logging
 generalLogging();
@@ -15,12 +15,12 @@ generalLogging();
 // Set up validation
 Joi.objectId = require('joi-objectid')(Joi);
 
-// Check and retrieve required environment variables
-const dbConnection = values();
+// Check required environment variables
+values();
 
 // Connect to MongoDB
-db(dbConnection);
-dbLogging(dbConnection);
+db();
+dbLogging();
 
 // Create Express app
 const app = express();
@@ -29,7 +29,6 @@ const app = express();
 routes(app);
 
 // Start server
-const port = process.env.PORT || 3000; // Set port from environment variable or default to 3000
-app.listen(port, () => {
-    winston.info(`Listening on port ${port}...`);
-});
+const server = start(app);
+
+module.exports = server;

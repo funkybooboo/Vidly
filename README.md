@@ -28,20 +28,34 @@ To run the app, follow these steps:
     npm install
     ```
 
-4. Set up the environment variable for JWT private key. Replace `<your-secret-key>` with your preferred secret key:
+4. Set up NODE_ENV.
+
+You have a couple of options for setting this environment variable up.
+
+For development (default value)
+```bash
+NODE_ENV=development
+```
+
+For testing
+```bash
+NODE_ENV=test
+```
+
+5. Set up the environment variable for JWT private key. Replace `<your-secret-key>` with your preferred secret key:
 
     ```bash
     export vidly_jwtPrivateKey=<your-secret-key>
-    export vidly_dbConnection=mongodb://localhost/vidly
+    export vidly_db=mongodb://localhost/vidly
     ```
 
-5. Start the server:
+6. Start the server:
 
     ```bash
     npm start
     ```
 
-6. The server should now be running on `http://localhost:3000`.
+7. The server should now be running on `http://localhost:3000`.
 
 ## Usage
 
