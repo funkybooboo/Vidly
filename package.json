@@ -2,10 +2,10 @@
   "name": "vidly",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "jest --watchAll --verbose --coverage",
-    "start": "node index.js"
+    "start": "node server/index.js"
   },
   "engines": {
     "node": "20.12.2"
