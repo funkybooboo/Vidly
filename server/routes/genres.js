@@ -10,9 +10,7 @@ const router = express.Router();
 
 // GET route to fetch all genres
 router.get("/", asyncCatch(async (request, response) => {
-    const genres = await Genre
-        .find()
-        .sort({ name: 1 });
+    const genres = await Genre.find().sort({ name: 1 });
     response.send(genres);
 }));
 
@@ -34,7 +32,7 @@ router.put("/:id", [validateObjectId, auth, admin, validate(validator)], asyncCa
     }
     // Update the genre's name
     genre.name = request.body.name;
-    genre = await genre.save();
+    await genre.save();
     response.send(genre);
 }));
 
